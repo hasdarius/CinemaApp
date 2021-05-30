@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <style>
+        Body {
+            font-family: Calibri, Helvetica, sans-serif;
+        }
+        button {
+            background-color: darkgoldenrod;
+            width: 25%;
+            padding: 15px;
+            margin: 10px 0px;
+            border: none;
+            cursor: pointer;
+
+        }
+        form {
+            border: 3px solid #f1f1f1;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            margin: 8px 0;
+            padding: 12px 20px;
+            display: inline-block;
+            border: 2px solid darkgoldenrod;
+            box-sizing: border-box;
+        }
+        button:hover {
+            opacity: 0.7;
+        }
+        .box{
+            /*width: 600px;*/
+            /*height: 400px;*/
+            padding: 0;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:100%;
+            opacity:0.95;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+        ul.topnav {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        ul.topnav li {float: left;}
+
+        ul.topnav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.topnav li a:hover:not(.active) {background-color: #111;}
+
+        ul.topnav li a.active {background-color: darkgoldenrod;}
+
+        ul.topnav li.right {float: right;}
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right,
+            ul.topnav li {float: none;}
+        }
+        .all-movies {
+            margin: 0;
+            padding: 5px;
+            background-color: goldenrod;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:95%;
+            opacity:0.8;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+
+        .all-movies > h1, .movie {
+            margin: 10px;
+            padding: 5px;
+        }
+
+        .movie {
+            background: palegoldenrod;
+        }
+
+        .movie > h2, p {
+            margin: 4px;
+            font-size: 90%;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+
+
+    <ul class="topnav">
+        <li><a class="active" th:href="@{/user/{username}(username = ${user.username})}">Home</a></li>
+        <li><a  th:href="@{/user/screenings/{username}(username = ${user.username})}">Book a ticket</a></li>
+        <li><a th:href="@{/user/history/{username}(username = ${user.username})}">Previous Bookings</a></li>
+        <li style="float:right"><a  href="/logout">LogOut</a></li>
+    </ul>
+
+    <div class="all-movies">
+        <h1>Hello, <span th:text="${user.username}"></span></h1>
+        <h1>Your previous bookings are:</span></h1>
+        <span th:each="booking : ${bookings}">
+                 <div class="movie">
+                     <h1><span th:text="${booking.getID()}"></span></h1>
+                   <h2>Movie: <span th:text="${@movieServiceImpl.findById(@screeningServiceImpl.findById(booking.getScreeningID()).get().movieID).get().getName()}"></span></h2>
+                   <h2>Time: <span th:text="${dateFormat.format(@screeningServiceImpl.findById(booking.getScreeningID()).get().time)}"></span></h2>
+                     <h2> Seats:
+                      <p th:each="seat : ${booking.getSelectedSeatsIds()}">
+                <span th:text="${@seatRepository.findById(seat).get().seatRow}"></span>
+                <span th:text="${@seatRepository.findById(seat).get().seatNumber}"></span></h2>
+            </p>
+                     <button type="button" ><a th:href="@{/user/{booking}/{username}/delete(booking = ${booking.ID}, username = ${user.username})}"> Delete </a></button>
+                 </div>
+             </span>
+    </div>
+
+
+</div>
+</body>
+
+</html>

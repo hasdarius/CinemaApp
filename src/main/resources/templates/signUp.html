@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <title>Admin</title>
+    <style>
+        Body {
+            font-family: Calibri, Helvetica, sans-serif;
+        }
+        button {
+            background-color: darkgoldenrod;
+            width: 25%;
+            padding: 15px;
+            margin: 10px 0px;
+            border: none;
+            cursor: pointer;
+
+        }
+        form {
+            border: 3px solid #f1f1f1;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            margin: 8px 0;
+            padding: 12px 20px;
+            display: inline-block;
+            border: 2px solid darkgoldenrod;
+            box-sizing: border-box;
+        }
+        button:hover {
+            opacity: 0.7;
+        }
+        .box{
+            /*width: 600px;*/
+            /*height: 400px;*/
+            padding: 0;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:100%;
+            opacity:0.8;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+        ul.topnav {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        ul.topnav li {float: left;}
+
+        ul.topnav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.topnav li a:hover:not(.active) {background-color: #111;}
+
+        ul.topnav li a.active {background-color: darkgoldenrod;}
+
+        ul.topnav li.right {float: right;}
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right,
+            ul.topnav li {float: none;}
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="box">
+    <div class="wrapper">
+        <div id="content">
+            <div class="container-fluid">
+            </div>
+            <div class="modal-dialog container-fluid" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Please Sign Up</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="#" th:action="@{/signUp/submit}" th:object="${newUser}"
+                              method="post">
+                            <fieldset>
+
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" th:field="*{username}" autocomplete="off" class="form-control" id="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="text" th:field="*{password}" autocomplete="off" class="form-control" id="password">
+                                </div>
+                                <div class="form-group">
+                                    <label>Password </label>
+                                </div>
+
+                            </fieldset>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    <div>
+                    <a href="/home">
+                        <button>
+                            Home
+                        </button>
+                    </a>
+                </div>
+            <div>
+            <a href="/login">
+                <button>
+                    Already signed up?
+                </button>
+            </a>
+        </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

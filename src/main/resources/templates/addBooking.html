@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link th:rel="stylesheet" th:href="@{/assets/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css}"/>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <link th:rel="stylesheet" th:href="@{/assets/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.css}"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/5.11.2/css/all.css} "/>
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{/assets/moment/moment.min.js}"></script>
+    <script th:src="@{/assets/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.min.js}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <style>
+        Body {
+            font-family: Calibri, Helvetica, sans-serif;
+        }
+        button {
+            background-color: darkgoldenrod;
+            width: 25%;
+            padding: 15px;
+            margin: 10px 0px;
+            border: none;
+            cursor: pointer;
+
+        }
+        form {
+            border: 3px solid #f1f1f1;
+        }
+        input[type=text], input[type=password] {
+            width: 25%;
+            margin: 8px 0;
+            padding: 12px 20px;
+            display: inline-block;
+            border: 2px solid darkgoldenrod;
+            box-sizing: border-box;
+        }
+        button:hover {
+            opacity: 0.7;
+        }
+        .box{
+            /*width: 600px;*/
+            /*height: 400px;*/
+            padding: 0;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:100%;
+            opacity:0.95;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+        ul.topnav {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        ul.topnav li {float: left;}
+
+        ul.topnav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.topnav li a:hover:not(.active) {background-color: #111;}
+
+        ul.topnav li a.active {background-color: darkgoldenrod;}
+
+        ul.topnav li.right {float: right;}
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right,
+            ul.topnav li {float: none;}
+        }
+        .all-movies {
+            margin: 0;
+            padding: 5px;
+            background-color: goldenrod;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:95%;
+            opacity:0.9;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+
+        .all-movies > h1, .movie {
+            margin: 10px;
+            padding: 5px;
+        }
+
+        .movie {
+            background: palegoldenrod;
+        }
+
+        .movie > h2, p {
+            margin: 4px;
+            font-size: 90%;
+        }
+        .smallBox::before
+        {
+            content:".";
+            width:15px;
+            height:15px;
+            float:left;
+            margin-right:10px;
+        }
+        .greenBox::before
+        {
+            content:"";
+            background:Green;
+        }
+        .redBox::before
+        {
+            content:"";
+            background:Red;
+        }
+        .emptyBox::before
+        {
+            content:"";
+            box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+            background-color:#ccc;
+        }
+
+
+
+        .seatGap
+        {
+            width:40px;
+        }
+
+        .seatVGap
+        {
+            height:40px;
+        }
+
+        table
+        {
+            text-align:center;
+        }
+
+
+        .Displaytable
+        {
+            text-align:center;
+        }
+        .Displaytable td, .Displaytable th {
+            border: 1px solid;
+            text-align: left;
+        }
+
+        textarea
+        {
+            border:none;
+            background:transparent;
+        }
+
+
+
+        input[type=checkbox] {
+            width:0px;
+            margin-right:18px;
+        }
+
+        input[type=checkbox]:before {
+            content: "";
+            width: 15px;
+            height: 15px;
+            display: inline-block;
+            vertical-align:middle;
+            text-align: center;
+            box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+            background-color:#ccc;
+        }
+        input[type=checkbox]:checked:before {
+            background-color:Green;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="all-movies">
+
+            <h2>Movie: <span th:text="${movie}"> </span></h2>
+        <h2>User: <span th:text="${user.username}" ></span></h2>
+        <h2>Screening Time: <span th:text="${dateFormat.format(screening.time)}"></span></h2>
+        <div>Legend:
+            <div class="smallBox greenBox">   Selected Seat</div>
+            <div class="smallBox redBox">     Reserved Seat</div>
+            <div class="smallBox emptyBox">   Empty Seat</div>
+        </div>
+        <form method="post" th:action="@{/user/{username}/{screening}/addBooking/submit(username = ${user.username}, screening = ${screening.ID})}" th:object="${newBooking}">
+            <div class="movie">
+            <label for="userID">UserID:</label><br>
+            <input  readonly type="text" id="userID" th:value="${user.ID}" th:field="*{userID}"><br>
+            <label for="screeningID">ScreeningID:</label><br>
+            <input readonly type="text" id="screeningID" th:value="${screening.ID}" th:field="*{screeningID}"><br><br>
+    <div class="seatStructure">
+
+            <table id="seatsBlock">
+                <p id="notification"></p>
+                <td colspan="14"><div class="screen">SCREEN</div></td>
+
+                <tr>
+                    <td></td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td></td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>7</td>
+                    <td>8</td>
+
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td> <div th:unless="${seatMap.get(seatList[0])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[0])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[0].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[1])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[1])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[1].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[2])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[2])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[2].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[3])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[3])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[3].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[4])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[4])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[4].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[5])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[5])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[5].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[6])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[6])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[6].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[7])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[7])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[7].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td> <div th:unless="${seatMap.get(seatList[8])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[8])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[8].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[9])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[9])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[9].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[10])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[10])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[10].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[11])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[11])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[11].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[12])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[12])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[12].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[13])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[13])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[13].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[14])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[14])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[14].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[15])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[15])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[15].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td> <div th:unless="${seatMap.get(seatList[16])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[16])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[16].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[17])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[17])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[17].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[18])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[18])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[18].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[19])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[19])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[19].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[20])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[20])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[20].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[21])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[21])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[21].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[22])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[22])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[22].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[23])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[23])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[23].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr class="seatVGap"></tr>
+
+                <tr>
+                    <td>4</td>
+                    <td> <div th:unless="${seatMap.get(seatList[24])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[24])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[24].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[25])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[25])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[25].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[26])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[26])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[26].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[27])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[27])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[27].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[28])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[28])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[28].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[29])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[29])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[29].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[30])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[30])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[30].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[31])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[31])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[31].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td> <div th:unless="${seatMap.get(seatList[32])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[32])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[32].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[33])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[33])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[33].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[34])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[34])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[34].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[35])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[35])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[35].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[36])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[36])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[36].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[37])}" class="smallBox redBox"></div>
+                    <div  th:if="${seatMap.get(seatList[37])}" >
+                        <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[37].getID()}" th:field="*{selectedSeatsIds}" >
+                    </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[38])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[38])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[38].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[39])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[39])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[39].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+
+                </tr>
+
+
+
+                <tr>
+                    <td>6</td>
+                    <td> <div th:unless="${seatMap.get(seatList[40])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[40])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[40].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[41])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[41])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[41].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[42])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[42])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[42].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[43])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[43])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[43].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td class="seatGap"></td>
+                    <td> <div th:unless="${seatMap.get(seatList[44])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[44])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[44].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[45])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[45])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[45].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[46])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[46])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[46].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+                    <td> <div th:unless="${seatMap.get(seatList[47])}" class="smallBox redBox"></div>
+                        <div  th:if="${seatMap.get(seatList[47])}" >
+                            <input type="checkbox" class="smallBox emptyBox" th:value="${seatList[47].getID()}" th:field="*{selectedSeatsIds}" >
+                        </div>
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <br/><button type="submit">Book now</button>
+    </div>
+            </div>
+        </form>
+
+
+
+    </div>
+
+    <br/><br/>
+
+
+
+
+    </div>
+
+</body>
+<script>
+
+
+    function updateSeatsArea() {
+
+
+            $(".seatStructure *").prop("disabled", true);
+
+
+            var allSeatsVals = [];
+
+            //Storing in Array
+            $('#seatsBlock :checked').each(function() {
+                allSeatsVals.push($(this).val());
+            });
+
+            //Displaying
+            $('#seatsDisplay').val(allSeatsVals);
+    }
+
+
+    function myFunction() {
+        alert($("input:checked").length);
+    }
+
+
+
+
+
+
+
+
+</script>
+
+</html>

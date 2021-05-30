@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <title>Admin</title>
+    <style>
+        Body {
+            font-family: Calibri, Helvetica, sans-serif;
+        }
+        button {
+            background-color: darkgoldenrod;
+            width: 25%;
+            padding: 15px;
+            margin: 10px 0px;
+            border: none;
+            cursor: pointer;
+
+        }
+        form {
+            border: 3px solid #f1f1f1;
+        }
+        input[type=text], input[type=password] {
+            width: 100%;
+            margin: 8px 0;
+            padding: 12px 20px;
+            display: inline-block;
+            border: 2px solid darkgoldenrod;
+            box-sizing: border-box;
+        }
+        button:hover {
+            opacity: 0.7;
+        }
+        .box{
+            /*width: 600px;*/
+            /*height: 400px;*/
+            padding: 0;
+            /*margin: 100px auto;*/
+            position:fixed;
+            width:100%;
+            height:100%;
+            opacity:0.8;
+            background-image: url('https://image.freepik.com/free-photo/cinema-elements-white-background-with-copy-space_23-2148416757.jpg');
+            background-size: cover;
+            overflow: scroll;
+        }
+        ul.topnav {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        ul.topnav li {float: left;}
+
+        ul.topnav li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul.topnav li a:hover:not(.active) {background-color: #111;}
+
+        ul.topnav li a.active {background-color: darkgoldenrod;}
+
+        ul.topnav li.right {float: right;}
+
+        @media screen and (max-width: 600px) {
+            ul.topnav li.right,
+            ul.topnav li {float: none;}
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="box">
+    <ul class="topnav">
+        <li><a href="/admin">Home</a></li>
+        <li><a class="active" href="/admin/users">Users</a></li>
+        <li><a href="/admin/movies">Movies</a></li>
+        <li><a href="/admin/screenings">Screenings</a></li>
+    </ul>
+    <div class="wrapper">
+        <div id="content">
+            <div class="container-fluid">
+            </div>
+            <div class="modal-dialog container-fluid" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add movie</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="submit-form" action="#" th:action="@{/admin/addMovie/submit}" th:object="${movie}"
+                              method="post"  enctype="multipart/form-data">
+                            <fieldset>
+                                <div class="form-group">
+                                    <label for="username">Name</label>
+                                    <input type="text" th:field="*{name}" autocomplete="off" class="form-control" id="username">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Genre</label>
+                                    <input type="text" th:field="*{genre}" autocomplete="off" class="form-control" id="password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <input type="text" th:field="*{description}" autocomplete="off" class="form-control" id="description">
+                                </div>
+                                <div class="form-group">
+                                    <label>Photo: </label>
+                                    <input type="file" name="image" accept="image/png, image/jpeg, image/jpg" />
+                                </div>
+                            </fieldset>
+                            <div class="modal-footer">
+                                <button type="submit" id="send" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var stompClient = null;
+
+    window.onload = function() {
+        connect();
+    };
+    function setConnected(connected) {
+        $("#connect").prop("disabled", connected);
+        $("#disconnect").prop("disabled", !connected);
+    }
+
+    function connect() {
+        var socket = new SockJS('/movie-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            setConnected(true);
+            console.log('Connected: ' + frame);
+        });
+    }
+
+
+    function sendName() {
+        location.href='/admin/addMovie/submit';
+        stompClient.send("/app/newMovie", {}, JSON.stringify({'name': "Darius'Project"}));
+    }
+    $(function () {
+        $("form").on('submit', function (e) {
+        });
+        $( "#send" ).click(function() { sendName(); });
+    })
+    ;
+</script>
+
+</body>
+</html>
